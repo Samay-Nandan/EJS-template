@@ -1,0 +1,52 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+  <%- include("./partials/nav.ejs") %>
+
+
+      <div class="create-blog content edit-post">
+        <div>
+          <label for="title">Blog title: <strong><%= blog.title %></strong></label>
+          <label for="body">Blog body: <strong><%= blog.body %></strong></label>
+          <button>Edit</button>
+        </div>
+      </div>
+
+      <div class="create-blog content update-post">
+        <form action="/blogs/edit/<%= blog._id %>" method="POST">
+          <label for="title">Blog title:</label>
+            <input type="text" id="title" name="title" value='<%= blog.title %>' required>
+          <label for="body">Blog body:</label>
+            <textarea id="body" name="body" required><%= blog.body %></textarea>
+          <button>Update</button>
+          <button class="delete" data-blog-id="<%= blog._id %>">Delete</button>
+        </form>
+      </div>
+
+  <%- include("./partials/footer.ejs") %>
+
+  <script>
+
+    //Updating Blog
+    const updateBlog = document.querySelector("div.update-post");
+    updateBlog.style.display = "none";
+
+    const editBlog = document.querySelector("div.edit-post");
+    editBlog.addEventListener('click', async ( event ) => {
+      editBlog.style.display = "none";
+      updateBlog.style.display = "block";
+    });
+
+    // DELETE BLOG
+    const deleteBlog = document.querySelector("button.delete");
+    const { blogId } = deleteBlog.dataset
+
+    deleteBlog.addEventListener('click', async ( event ) => {
+        const { data } = await axios.delete(`/blogs/${blogId}`)
+        window.location.href = data.redirect;
+    });
+    
+  </script>
+</body>
+</html>
